@@ -1,9 +1,9 @@
 /**
  * CLI Argument Parser (both *nix and win32 formats)
- * 
- * @author Gareth Stones <gareth@remove-this.rezolabs.com>
+ *
+ * @author Gareth Stones <gatty.nz@gmail.com>
  * @license GNU General Public License
- * 
+ *
  * @bug -k=v && --key=value accepts x{1,} = chars
  */
 
@@ -37,12 +37,12 @@ char *argumentGetValue (char *key);
  */
 
 int main (int argc, char *argv[]) {
-   
+
    if (argc == 1)
       argumentUsageAndHelp(argv[0]);
-   
+
    int i, size;
-   
+
    for (i = 1; i < argc; i++) {
       size = (sizeof(char*) * strlen(argv[i]));
       char *current = (char*) malloc(size + 1);
@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
          argumentWin32(argv[i], argv[i+1]);
 #endif
    }
-   
+
    return 0;
 }
 
@@ -65,9 +65,9 @@ int main (int argc, char *argv[]) {
  */
 
 void argumentUsageAndHelp (const char *programName) {
-   
+
    fprintf(stderr, "usage: %s (arguments)\n", programName);
-   
+
    exit(-1);
 }
 
@@ -78,26 +78,26 @@ void argumentUsageAndHelp (const char *programName) {
  */
 
 void argumentWin32 (char *key, char *value) {
-   
+
    if (strlen(key) <= 1) {
       fprintf(stderr, "Invalid CLI argument length (win32).\n");
       exit(-1);
    }
-   
+
    /**
     * Settings that do not require usage of value argument
     */
-   
+
    if (strncmp(key, "/?", 2) == 0 && strlen(key) == 2 && value == NULL)
       printf("%s argument with no value, setting to default\n", key);
-   
+
    if (value == NULL)
       return;
-   
+
    /**
     * Settings that require usage of value argument
     */
-   
+
    if (strncmp(key, "/example", 8) == 0 && strlen(key) == 8)
       printf("%s %s\n", key, value);
 }
@@ -106,30 +106,30 @@ void argumentWin32 (char *key, char *value) {
 
 /**
  * Parse short CLI argument's
- * 
+ *
  * @accept -k
  *         -k value
  *         -k=value
  */
 
 void argumentShort (char *key, char *value) {
-   
+
    if (strlen(key) <= 1) {
       fprintf(stderr, "Invalid CLI argument length (short).\n");
       exit(-1);
    }
-   
+
    /**
     * Settings that do not require usage of value argument
     */
-   
+
    if (strncmp(key, "-e", 2) == 0 && strlen(key) == 2 && value == NULL)
       printf("%s argument with no value, setting to default\n", key);
-   
+
    /**
     * Check if we're dealing with -k=value if value is NULL
     */
-   
+
    if (value == NULL) {
       if (strchr(key, '=') != NULL) {
          value = argumentGetValue(key);
@@ -137,37 +137,37 @@ void argumentShort (char *key, char *value) {
       }
       else return;
    }
-   
+
    if (strncmp(key, "-e", 2) == 0 && strlen(key) == 2)
       printf("%s %s\n", key, value);
 }
 
 /**
  * Parse long CLI argument's
- * 
+ *
  * @accept --key
  *         --key value
  *         --key=value
  */
 
 void argumentLong (char *key, char *value) {
-   
+
    if (strlen(key) <= 2) {
       fprintf(stderr, "Invalid CLI argument length (long)\n");
       exit(-1);
    }
-   
+
    /**
     * Settings that do not require usage of value argument
     */
-   
+
    if (strncmp(key, "--example", 9) == 0 && strlen(key) == 9 && value == NULL)
       printf("%s with no value, setting to default\n", key);
-   
+
    /**
     * Check if we're dealing with --key=value if value is NULL
     */
-   
+
    if (value == NULL) {
       if (strchr(key, '=') != NULL) {
          value = argumentGetValue(key);
@@ -176,7 +176,7 @@ void argumentLong (char *key, char *value) {
       else
          return;
    }
-   
+
    if (strncmp(key, "--example", 9) == 0 && strlen(key) == 9)
       printf("%s %s\n", key, value);
 }
@@ -186,7 +186,7 @@ void argumentLong (char *key, char *value) {
  */
 
 char *argumentGetKey (char *key) {
-   
+
    return strtok(key, "=");
 }
 
@@ -195,11 +195,11 @@ char *argumentGetKey (char *key) {
  */
 
 char *argumentGetValue (char *key) {
-   
+
    char *value;
-   
+
    value = strtok(key, "=");
    value = strtok(NULL, "=");
-   
+
    return value;
 }
